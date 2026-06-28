@@ -1,0 +1,242 @@
+{
+  "name": "vscode-viml",
+  "displayName": "vim",
+  "description": "Language support for VimL (Vimscript) — syntax highlighting (statement keywords, ex commands, scope-sigil variables, special v: vars, built-in functions, strings, numbers), filetype detection, LSP (vimlrs --lsp), running, and full debugging (breakpoints, stepping, variables) via vimlrs --dap.",
+  "version": "0.1.0",
+  "publisher": "MenkeTechnologies",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Debuggers"
+  ],
+  "keywords": [
+    "vim",
+    "viml",
+    "vimscript",
+    "vimlrs",
+    "lsp",
+    "debug"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MenkeTechnologies/vscode-viml.git"
+  },
+  "homepage": "https://menketechnologies.github.io/vscode-viml/",
+  "bugs": {
+    "url": "https://github.com/MenkeTechnologies/vscode-viml/issues"
+  },
+  "main": "./extension.js",
+  "activationEvents": [
+    "onLanguage:vim",
+    "onDebugResolve:vim",
+    "onDebugDynamicConfigurations:vim"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "vim",
+        "aliases": [
+          "VimL",
+          "Vim script",
+          "vim"
+        ],
+        "extensions": [
+          ".vim"
+        ],
+        "filenames": [
+          "vimrc",
+          ".vimrc",
+          "_vimrc",
+          "gvimrc",
+          ".gvimrc",
+          "_gvimrc",
+          ".exrc",
+          "_exrc",
+          ".nvimrc",
+          "init.vim"
+        ],
+        "firstLine": "^#!.*\\b(vimlrs|vim|nvim)\\b",
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "vim",
+        "scopeName": "source.viml",
+        "path": "./syntaxes/vim.tmLanguage.json"
+      }
+    ],
+    "configuration": {
+      "title": "vim",
+      "properties": {
+        "vim.path": {
+          "type": "string",
+          "default": "vimlrs",
+          "description": "Path to the vimlrs executable used for the language server, running, and debugging."
+        },
+        "vim.lsp.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Start the vim language server (vimlrs --lsp). Disable to use syntax highlighting only."
+        },
+        "vim.lsp.args": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "--lsp"
+          ],
+          "description": "Arguments passed to the vimlrs executable to start the language server."
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "vim.run",
+        "title": "Run File",
+        "category": "VimL",
+        "icon": "$(play)"
+      },
+      {
+        "command": "vim.debug",
+        "title": "Debug File",
+        "category": "VimL",
+        "icon": "$(debug-alt)"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "vim.run",
+        "key": "ctrl+f5",
+        "mac": "ctrl+f5",
+        "when": "editorLangId == vim"
+      }
+    ],
+    "menus": {
+      "editor/title/run": [
+        {
+          "command": "vim.run",
+          "when": "resourceLangId == vim",
+          "group": "navigation@1"
+        },
+        {
+          "command": "vim.debug",
+          "when": "resourceLangId == vim",
+          "group": "navigation@2"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "vim.run",
+          "when": "editorLangId == vim"
+        },
+        {
+          "command": "vim.debug",
+          "when": "editorLangId == vim"
+        }
+      ]
+    },
+    "breakpoints": [
+      {
+        "language": "vim"
+      }
+    ],
+    "debuggers": [
+      {
+        "type": "vim",
+        "label": "VimL",
+        "languages": [
+          "vim"
+        ],
+        "configurationAttributes": {
+          "launch": {
+            "required": [
+              "program"
+            ],
+            "properties": {
+              "program": {
+                "type": "string",
+                "description": "Absolute path to the .vim script to debug.",
+                "default": "${file}"
+              },
+              "args": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Command-line arguments passed to the script.",
+                "default": []
+              },
+              "cwd": {
+                "type": "string",
+                "description": "Working directory for the debugged program.",
+                "default": "${workspaceFolder}"
+              },
+              "stopOnEntry": {
+                "type": "boolean",
+                "description": "Break on the first line of the program.",
+                "default": false
+              },
+              "noDebug": {
+                "type": "boolean",
+                "description": "Run without the debugger (ignore breakpoints).",
+                "default": false
+              },
+              "interpreterArgs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Extra arguments passed to the vimlrs interpreter itself.",
+                "default": []
+              },
+              "vimlrsPath": {
+                "type": "string",
+                "description": "Override the vimlrs executable for this debug session. Defaults to the resolved \"vim.path\"."
+              }
+            }
+          }
+        },
+        "initialConfigurations": [
+          {
+            "type": "vim",
+            "request": "launch",
+            "name": "VimL: Debug Current File",
+            "program": "${file}",
+            "cwd": "${workspaceFolder}",
+            "stopOnEntry": false
+          }
+        ],
+        "configurationSnippets": [
+          {
+            "label": "VimL: Debug Current File",
+            "description": "Debug the active .vim file with vimlrs --dap",
+            "body": {
+              "type": "vim",
+              "request": "launch",
+              "name": "VimL: Debug Current File",
+              "program": "^\"\\${file}\"",
+              "cwd": "^\"\\${workspaceFolder}\"",
+              "stopOnEntry": false
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "echo no build step"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.2.1",
+    "vscode-oniguruma": "^2.0.1",
+    "vscode-textmate": "^9.1.0"
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "vim",
+  "scopeName": "source.viml",
+  "fileTypes": [
+    "vim"
+  ],
+  "patterns": [
+    { "include": "#shebang" },
+    { "include": "#comments" },
+    { "include": "#strings" },
+    { "include": "#numbers" },
+    { "include": "#special-vars" },
+    { "include": "#function-def" },
+    { "include": "#builtin-functions" },
+    { "include": "#keywords" },
+    { "include": "#ex-commands" },
+    { "include": "#scope-variables" },
+    { "include": "#options" },
+    { "include": "#environment" },
+    { "include": "#registers" },
+    { "include": "#operators" }
+  ],
+  "repository": {
+    "shebang": {
+      "match": "\\A#!.*$",
+      "name": "comment.line.shebang.viml"
+    },
+    "comments": {
+      "match": "^\\s*\".*$",
+      "name": "comment.line.double-quote.viml"
+    },
+    "numbers": {
+      "match": "\\b(0[xX][0-9A-Fa-f]+|\\d[\\d]*\\.\\d+([eE][-+]?\\d+)?|\\.\\d+([eE][-+]?\\d+)?|\\d[\\d]*([eE][-+]?\\d+)?)\\b",
+      "name": "constant.numeric.viml"
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.viml",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            { "match": "\\\\.", "name": "constant.character.escape.viml" }
+          ]
+        },
+        {
+          "name": "string.quoted.single.viml",
+          "begin": "'",
+          "end": "'",
+          "patterns": [
+            { "match": "''", "name": "constant.character.escape.viml" }
+          ]
+        }
+      ]
+    },
+    "special-vars": {
+      "match": "\\bv:(true|false|null|none|count1|count|version|val|key|exception|throwpoint|lnum|errmsg|shell_error|this_session|char|register|servername)\\b",
+      "name": "constant.language.viml"
+    },
+    "function-def": {
+      "match": "\\b(function!?)\\s+([A-Za-z_][A-Za-z0-9_:#.]*)",
+      "captures": {
+        "1": { "name": "keyword.control.viml" },
+        "2": { "name": "entity.name.function.viml" }
+      }
+    },
+    "builtin-functions": {
+      "match": "\\b(abs|add|and|append|argc|call|ceil|char2nr|copy|cos|count|deepcopy|empty|escape|eval|execute|exists|extend|filter|float2nr|floor|fmod|fnameescape|function|getenv|getpid|get|has_key|has|index|input|insert|invert|isinf|isnan|items|join|json_decode|json_encode|keys|len|line|localtime|map|matchstr|match|max|min|nr2char|or|pathshorten|pow|printf|rand|range|reduce|reltimefloat|reltimestr|reltime|remove|repeat|reverse|round|setenv|sha256|shellescape|sin|sort|soundfold|split|sqrt|srand|str2float|str2nr|strcharpart|strftime|string|strlen|strpart|strptime|strridx|strtrans|submatch|substitute|tolower|toupper|trim|type|values|xor|flattennew|flatten|list2blob|blob2list)\\b(?=\\s*\\()",
+      "name": "support.function.viml"
+    },
+    "keywords": {
+      "patterns": [
+        { "name": "keyword.control.viml", "match": "\\b(if|elseif|else|endif|while|endwhile|for|endfor|in|endfunction|function|return|break|continue|try|catch|finally|throw|let|unlet|const|lockvar|unlockvar|call|eval|execute|echohl|echomsg|echoerr|echowindow|echon|echo|finish)\\b" }
+      ]
+    },
+    "ex-commands": {
+      "name": "keyword.other.command.viml",
+      "match": "\\b(source|runtime|normal|redir|silent|verbose|setlocal|setglobal|set|command|delcommand|autocmd|augroup|highlight|syntax|nnoremap|inoremap|vnoremap|xnoremap|cnoremap|noremap|nmap|imap|vmap|xmap|map|abbreviate|sign|sleep)\\b"
+    },
+    "scope-variables": {
+      "patterns": [
+        { "match": "\\b[gsbwtla]:[A-Za-z0-9_]+", "name": "variable.other.viml" },
+        { "match": "\\bv:[A-Za-z0-9_]+", "name": "variable.other.viml" }
+      ]
+    },
+    "options": {
+      "match": "&(l:|g:)?[A-Za-z_][A-Za-z0-9_]*",
+      "name": "variable.other.option.viml"
+    },
+    "environment": {
+      "match": "\\$[A-Za-z_][A-Za-z0-9_]*",
+      "name": "variable.other.environment.viml"
+    },
+    "registers": {
+      "match": "@[-0-9a-zA-Z\"@%#=*+~_:./]",
+      "name": "variable.other.register.viml"
+    },
+    "operators": {
+      "patterns": [
+        { "name": "keyword.operator.assignment.viml", "match": "(\\+=|-=|\\*=|/=|%=|\\.\\.=|\\.=|=)" },
+        { "name": "keyword.operator.comparison.viml", "match": "(==[#?]?|!=[#?]?|=~[#?]?|!~[#?]?|<=|>=|<|>)" },
+        { "name": "keyword.operator.word.viml", "match": "\\b(is|isnot)[#?]?\\b" },
+        { "name": "keyword.operator.logical.viml", "match": "(&&|\\|\\||!)" },
+        { "name": "keyword.operator.arithmetic.viml", "match": "(\\+\\+|--|\\+|-|\\*|/|%)" },
+        { "name": "keyword.operator.concat.viml", "match": "(\\.\\.|\\.)" },
+        { "name": "keyword.operator.ternary.viml", "match": "(\\?|:)" }
+      ]
+    }
+  }
+}
