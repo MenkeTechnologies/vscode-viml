@@ -16,7 +16,7 @@
 
 > *"Open a `.vim`. Functions, scope sigils, ex commands, and `v:` vars light up — and `vimlrs` jacks in."*
 
-VS Code / VSCodium support for **VimL (Vimscript)** — driven by **[vimlrs](https://github.com/MenkeTechnologies)**, a standalone Vimscript interpreter written in Rust (a port of Neovim's eval engine on fusevm). A standalone TextMate grammar, filetype detection, language-server integration via `vimlrs --lsp`, one-key running, and full debugging (breakpoints, stepping, variables) via `vimlrs --dap`.
+VS Code / VSCodium support for **VimL (Vimscript)** — driven by **[vimlrs](https://github.com/MenkeTechnologies/vimlrs)**, a standalone Vimscript interpreter written in Rust (a port of Neovim's eval engine on fusevm). A standalone TextMate grammar, filetype detection, language-server integration via `viml --lsp`, one-key running, and full debugging (breakpoints, stepping, variables) via `viml --dap`.
 
 ### [`Read the Docs`](https://menketechnologies.github.io/vscode-viml/) &middot; [`Engineering Report`](https://menketechnologies.github.io/vscode-viml/report.html) · [`vscode-stryke`](https://github.com/MenkeTechnologies/vscode-stryke) · [`zshrs`](https://github.com/MenkeTechnologies/zshrs)
 
@@ -28,9 +28,9 @@ VS Code / VSCodium support for **VimL (Vimscript)** — driven by **[vimlrs](htt
 
 - **Filetype detection** — `*.vim` files, the well-known config filenames (`vimrc`, `.vimrc`, `init.vim`, …), and files whose first line is a VimL shebang (`#!/usr/bin/env vimlrs`, `#!/usr/bin/vim`).
 - **Syntax highlighting** — a standalone TextMate grammar (`source.viml`).
-- **Language server** — `vimlrs --lsp` via [vscode-languageclient](https://github.com/microsoft/vscode-languageserver-node) (diagnostics, hover, completion — whatever the server provides).
-- **Run** — `VimL: Run File` (Ctrl+F5) executes the active script in a terminal as `vimlrs <file>`.
-- **Debugging** — breakpoints, stepping, call stack, variables, and watch via `vimlrs --dap`.
+- **Language server** — `viml --lsp` via [vscode-languageclient](https://github.com/microsoft/vscode-languageserver-node) (diagnostics, hover, completion — whatever the server provides).
+- **Run** — `VimL: Run File` (Ctrl+F5) executes the active script in a terminal as `viml <file>`.
+- **Debugging** — breakpoints, stepping, call stack, variables, and watch via `viml --dap`.
 
 The grammar covers the VimL surface: the statement keywords (`if` / `function` / `let` / `try` / `echo` …), common ex commands (`set`, `autocmd`, `nnoremap`, `highlight` …), scope-sigil variables (`g:`, `s:`, `b:`, `l:`, `a:` …), the special `v:` variables (`v:true`, `v:version`, `v:val` …), the built-in functions (`substitute`, `printf`, `has`, `split`, `matchstr`, `json_encode`, …), options (`&number`), environment (`$HOME`), registers (`@a`), single- and double-quoted strings, numbers, and operators.
 
@@ -48,17 +48,17 @@ Created by **[MenkeTechnologies](https://github.com/MenkeTechnologies)**.
 | Syntax highlighting | **Implemented** — TextMate grammar (`source.viml`) |
 | Comments / brackets / autoclose | **Implemented** — `language-configuration.json` |
 | Indentation | **Implemented** — block-keyword `indentationRules` |
-| Language server | **Implemented** — `vimlrs --lsp` via vscode-languageclient |
-| Run | **Implemented** — `VimL: Run File` (Ctrl+F5 / editor-title ▶) runs `vimlrs <file>` in a terminal |
-| Debugging | **Implemented** — breakpoints, step over/into/out, call stack, scopes, variables, watch/hover, run-without-debugging, via `vimlrs --dap` (native DAP) |
+| Language server | **Implemented** — `viml --lsp` via vscode-languageclient |
+| Run | **Implemented** — `VimL: Run File` (Ctrl+F5 / editor-title ▶) runs `viml <file>` in a terminal |
+| Debugging | **Implemented** — breakpoints, step over/into/out, call stack, scopes, variables, watch/hover, run-without-debugging, via `viml --dap` (native DAP) |
 | Config | `vim.path`, `vim.lsp.enabled`, `vim.lsp.args` |
 
-> The language server needs the `vimlrs` binary. The extension resolves it from
+> The language server needs the `viml` binary. The extension resolves it from
 > `$PATH` plus the common install locations (`/opt/homebrew/bin`, `/usr/local/bin`,
-> `~/.cargo/bin`, `~/.local/bin`) — so it works even when the editor is launched
-> from the macOS Dock / Finder, which doesn't inherit your shell `$PATH`. Install
-> with `cargo install vimlrs`. If it lives elsewhere, set `vim.path` to the
-> absolute path.
+> `/usr/bin`, `~/.cargo/bin`, `~/.local/bin`) — so it works even when the editor is
+> launched from the macOS Dock / Finder, which doesn't inherit your shell `$PATH`.
+> Install with `cargo install vimlrs`. The `vim.path` default is `vimlrs`; set it
+> to `viml` (or the absolute path).
 
 ---
 
@@ -81,7 +81,7 @@ git clone https://github.com/MenkeTechnologies/vscode-viml \
     ~/.vscode/extensions/vscode-viml
 ```
 
-Open any `.vim` file — it lights up. The language server starts automatically when `vimlrs` is on `$PATH`.
+Open any `.vim` file — it lights up. The language server starts automatically when `viml` is on `$PATH`.
 
 ---
 
@@ -89,13 +89,13 @@ Open any `.vim` file — it lights up. The language server starts automatically 
 
 **Run** — open a `.vim` file and press **Ctrl+F5**, click the **▶** in the editor
 title bar, or run **VimL: Run File** from the command palette. The file is saved
-and executed as `vimlrs <file>` in an integrated terminal.
+and executed as `viml <file>` in an integrated terminal.
 
 **Debug** — set breakpoints in the gutter and press **F5** (or click the **debug**
 icon in the editor title bar). No `launch.json` is required: F5 on a `.vim` file
 debugs the active file. You get the full debugger — breakpoints, step
 over/into/out, call stack, scopes, local + global variables, watch expressions,
-and hover-to-evaluate — driven by the native debug adapter (`vimlrs --dap`).
+and hover-to-evaluate — driven by the native debug adapter (`viml --dap`).
 
 For a saved configuration, add to `.vscode/launch.json`:
 
@@ -143,15 +143,15 @@ concatenation, ternary) are scoped too.
 
 ## [0x05] LANGUAGE SERVER
 
-The extension launches `vimlrs --lsp` (stdio JSON-RPC) through `vscode-languageclient`. Configure it in Settings:
+The extension launches `viml --lsp` (stdio JSON-RPC) through `vscode-languageclient`. Configure it in Settings:
 
 | Setting | Default | Effect |
 |---|---|---|
-| `vim.path` | `vimlrs` | Path to the vimlrs executable |
+| `vim.path` | `vimlrs` | Path to the viml executable (the binary installed by `cargo install vimlrs` is `viml`; set this accordingly) |
 | `vim.lsp.enabled` | `true` | Start the language server (set `false` for highlighting only) |
 | `vim.lsp.args` | `["--lsp"]` | Args passed to start the server |
 
-The transport is omitted so the client spawns bare `vimlrs --lsp` and never
+The transport is omitted so the client spawns bare `viml --lsp` and never
 appends `--stdio` — the arg-rejection / "connection got disposed" failure mode
 learned from vscode-stryke. If the binary is missing, the extension shows one
 non-fatal warning and syntax highlighting keeps working.
@@ -176,8 +176,8 @@ node scripts/tokenize_test.js
 vscode-viml/
 ├── package.json                 # extension manifest (language, grammar, config, LSP, DAP)
 ├── language-configuration.json  # comments, brackets, autoclose, indent rules
-├── extension.js                 # LSP client (vimlrs --lsp) + run + debug (vimlrs --dap)
-├── lib/resolveBinary.js         # GUI-PATH-safe vimlrs binary resolver
+├── extension.js                 # LSP client (viml --lsp) + run + debug (viml --dap)
+├── lib/resolveBinary.js         # GUI-PATH-safe viml binary resolver
 ├── syntaxes/vim.tmLanguage.json # TextMate grammar (source.viml)
 ├── scripts/tokenize_test.js     # tokenizes a sample with vscode-textmate + asserts scopes
 ├── scripts/resolver_test.js     # unit tests for the binary resolver
